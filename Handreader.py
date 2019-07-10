@@ -4,7 +4,7 @@ import sys
 #подключение других библиотек
 
 #подключение своих модулей
-import UserInterface as UI
+import UserInterface as UI #подключение пользовательского интерфейса
 
 learning = True #запускать ли с режимом обучения
 
@@ -14,6 +14,9 @@ if(len(sys.argv) == 2): #проверка на дополнительный ар
         learning = True #включение режима обучения
 
 userInterface = UI.UserInterface(learning) #создание экземпляра класса GUI и передача аргументов
+
+while True:
+    pass
 
 
 
