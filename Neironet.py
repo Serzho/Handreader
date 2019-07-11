@@ -1,10 +1,10 @@
-import numpy as np
+#import numpy as np
 
 class Neironet():
     def __init__(self):
         pass
 
-
+'''
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
@@ -32,7 +32,7 @@ for i in range(20000):
 print(synaptic_weights)
     
 print(outputs)
-
+'''
 
 
 

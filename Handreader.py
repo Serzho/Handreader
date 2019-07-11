@@ -1,10 +1,12 @@
 #подключение стандартный библиотек
 import sys 
 
-#подключение других библиотек
+#подключение сторонних библиотек
+import threading as th
 
 #подключение своих модулей
 import UserInterface as UI #подключение пользовательского интерфейса
+import Neironet as NN         
 
 learning = True #запускать ли с режимом обучения
 
@@ -13,12 +15,8 @@ if(len(sys.argv) == 2): #проверка на дополнительный ар
     if(sys.argv[1] == '-l'): #аргумент для обучения
         learning = True #включение режима обучения
 
-userInterface = UI.UserInterface(learning) #создание экземпляра класса GUI и передача аргументов
-
-while True:
-    pass
-
-
+neironet = NN.Neironet() #создание экземпляра нейросети
+userInterface = UI.UserInterface(learning, neironet) #создание экземпляра класса GUI и передача аргументов
 
 
 

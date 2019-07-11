@@ -1,10 +1,19 @@
 #импорт стандартных библиотек
 from tkinter import * #импорт сатндартной библиотеки GUI
 
+#импорт сторонних библиотек
+import numpy as np #импорт numpy
+
+#подключение своих модулей
+import Neironet as NN #подключение нейросети
+
 class UserInterface(): #класс пользовательского интерфейса
-    def __init__(self, learning = False): #функция инициализации
+    def __init__(self, learning = False, neironet = None): #функция инициализации
         #присваивание значений атрибутов
+        self.__neironet = neironet #нейросеть
         self.__learning = learning #режим обучение
+        self.__canvasReady = False #переменная отвечающая за готовность передевать письменную букву
+        self.__field = np.zeros((50, 50)) #значения для передачи письменной буквы 
 
         #создание окна
         self.__window = Tk() #объект окна
@@ -13,11 +22,16 @@ class UserInterface(): #класс пользовательского интер
         self.__window.resizable(0, 0) #фиксируем размеры окна
 
         #создание элементов окна
-        #создаем поле для рисования
+        #создание поля для рисования
         self.__canvas = Canvas(self.__window, width = 250, height = 250, bg = "white") #создание поля рисования
-        self.__canvas.pack() #упаковываем поле
-        self.__canvas.bind("<B1-Motion>", self.__drawCanvas) #привязываем событие зажатой кнопки к функции рисования
+        self.__canvas.pack() #упаковка поля
+        self.__canvas.bind("<B1-Motion>", self.__drawCanvas) #привязывание события зажатой кнопки к функции рисования
         self.__canvas.place(x = 275, y = 50) #выставление координат 
+
+        #создание поля для отображения передаваемых значений
+        self.__outputCanvas = Canvas(self.__window, width = 50, height = 50, bg = "white") #создание поля
+        self.__outputCanvas.pack() #упаковка поля
+        self.__outputCanvas.place(x = 375, y = 315) #выставление координат
 
         #создание кнопок
         self.__inputBtn = Button(self.__window, text = "Ок", command = self.__input, width = 10) #создание кнопки OK
@@ -40,8 +54,7 @@ class UserInterface(): #класс пользовательского интер
                                                 value = 2, command = self.__education) #создание кнопки выбора обучения
             self.__selectEducation.place(x = 50, y = 280) #выставление координат
 
-        self.__window.mainloop() #запуск цикла окна 
-
+        self.__window.mainloop() #запуск цикла окна
 
     def __acceptLetter(self): #функция ввода буквы на обучение
         pass
@@ -55,13 +68,41 @@ class UserInterface(): #класс пользовательского интер
         self.__acceptLetter.place(x = 90, y = 340) #возварщение кнопки для подтверждения буквы
 
     def __input(self): #функция ввода прописной буквы
-        pass
+        self.__canvasReady = True #даем добро на отправку информации
+        #отрисовка данных для отправки на доп поле
+        for i in range(50): 
+            for k in range(50):
+                if(bool(self.__field[i][k])):
+                         self.__outputCanvas.create_oval(i, k, i, k)
+                    
 
     def __drawCanvas(self, event): #функция рисования на поле
         self.__canvas.create_oval(event.x - 1, event.y - 1, #создаем круг по координате мышки с радиусом 1
                                  event.x + 1, event.y + 1,
                                  fill = "black") #заливаем круг черным цветом
+        #безопасный код для добавления данных на отправку
+        try: 
+            self.__field[event.x//5, event.y//5] = 1
+        except IndexError: #исключение при выходе мыши за поле для рисования
+            print("Out of field")
 
-    def __clearCanvas(self): #функция очистки поля
-        self.__canvas.delete("all")
+    def __clearCanvas(self): #функция очистки полей
+        self.__canvas.delete("all") #очистка главного поля
+        self.__outputCanvas.delete("all") #очистка дополнительного поля
+        #очистка данных на отправку
+        for i in range(50):
+            for k in range(50):
+                self.__field[i][k] = 0
+
+    def getField(self): #функция передачи данных
+        field = self.__field #копирование данных
+        self.__clearCanvas() #очистка полей
+        self.__canvasReady = False #выставление неготовности отправки данных
+        
+        return field
+
+    def getReady(self):
+        return self.__canvasReady
+
+
 
