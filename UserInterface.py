@@ -12,8 +12,8 @@ class UserInterface(): #класс пользовательского интер
         #присваивание значений атрибутов
         self.__neironet = neironet #нейросеть
         self.__learning = learning #режим обучение
-        self.__canvasReady = False #переменная отвечающая за готовность передевать письменную букву
-        self.__field = np.zeros((50, 50)) #значения для передачи письменной буквы 
+        self.__field = np.zeros((25, 25)) #значения для передачи письменной буквы 
+        self.__mode = 0
 
         #создание окна
         self.__window = Tk() #объект окна
@@ -41,6 +41,8 @@ class UserInterface(): #класс пользовательского интер
         self.__clearBtn.place(x = 50, y = 140) #выставление координат 
 
         if(learning): #создание элементов для разработчика
+            self.__teachLetter = -1
+            
             self.__selectLetters = Entry(self.__window, width = 5) #создание текствого поля для ввода буквы
             self.__selectLetters.place(x = 50, y = 340) #выставление координат
 
@@ -57,23 +59,26 @@ class UserInterface(): #класс пользовательского интер
         self.__window.mainloop() #запуск цикла окна
 
     def __acceptLetter(self): #функция ввода буквы на обучение
-        pass
+        self.__teachLetter = ord(self.__selectLetters.get())     
 
     def __testing(self): #функция для выбора режима тестирования
+        self.__mode = 0
         self.__selectLetters.place_forget() #удаление текстового поля
         self.__acceptLetter.place_forget() #удаление кнопки для подтверждения буквы
 
     def __education(self): #функция для выбора режима обучения
+        self.__mode = 1
         self.__selectLetters.place(x = 50, y = 340) #возвращение текстового поля 
         self.__acceptLetter.place(x = 90, y = 340) #возварщение кнопки для подтверждения буквы
 
     def __input(self): #функция ввода прописной буквы
-        self.__canvasReady = True #даем добро на отправку информации
+        self.__outputCanvas.delete("all") #очистка дополнительного поля
         #отрисовка данных для отправки на доп поле
-        for i in range(50): 
-            for k in range(50):
+        for i in range(25): 
+            for k in range(25):
                 if(bool(self.__field[i][k])):
-                         self.__outputCanvas.create_oval(i, k, i, k)
+                         self.__outputCanvas.create_oval(i * 2, k * 2, i * 2 + 1, k * 2 + 1)
+        self.__sendField()
                     
 
     def __drawCanvas(self, event): #функция рисования на поле
@@ -82,27 +87,26 @@ class UserInterface(): #класс пользовательского интер
                                  fill = "black") #заливаем круг черным цветом
         #безопасный код для добавления данных на отправку
         try: 
-            self.__field[event.x//5, event.y//5] = 1
+            self.__field[event.x//10, event.y//10] = 1
         except IndexError: #исключение при выходе мыши за поле для рисования
             print("Out of field")
 
     def __clearCanvas(self): #функция очистки полей
         self.__canvas.delete("all") #очистка главного поля
-        self.__outputCanvas.delete("all") #очистка дополнительного поля
+        
+    def __clearField(self):
         #очистка данных на отправку
-        for i in range(50):
-            for k in range(50):
+        for i in range(25):
+            for k in range(25):
                 self.__field[i][k] = 0
 
-    def getField(self): #функция передачи данных
-        field = self.__field #копирование данных
-        self.__clearCanvas() #очистка полей
-        self.__canvasReady = False #выставление неготовности отправки данных
+    def __sendField(self): #функция передачи данных
+        self.__clearCanvas() #очистка поля
+        self.__neironet.getField(data = self.__field, mode = self.__mode, letter = self.__teachLetter)
+        self.__clearField()
         
-        return field
+        
 
-    def getReady(self):
-        return self.__canvasReady
 
 
 

@@ -6,7 +6,7 @@ import threading as th
 
 #подключение своих модулей
 import UserInterface as UI #подключение пользовательского интерфейса
-import Neironet as NN         
+import Neironet as NN #подключение нейросети
 
 learning = True #запускать ли с режимом обучения
 
