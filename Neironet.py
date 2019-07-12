@@ -1,4 +1,5 @@
 import numpy as np
+from math import *
 
 class Neironet():
     def __init__(self):
@@ -11,10 +12,12 @@ class Neironet():
              self.__educating(data, letter)
 
     def __educating(self, data, letter):
-        sigmoid = lambda x: 1 / (1 + np.exp(-x))
+        sigmoid = lambda x: 1 / (1 + exp(-x))
         
         created_weights = np.array([])
-        train_out = np.array([[letter]]).T
+        print(letter, chr(letter))
+        train_out = np.array([[letter / 1000]]).T
+        print('train_out', train_out)
         train_in = []
         weights = []
 
@@ -31,7 +34,7 @@ class Neironet():
             created_weights = 2 * np.random.random(625) - 1
             for i in range(625):
                 f.write(str(created_weights[i]) + '\n')
-                print(str(created_weights[i]) + '\n')
+                #print(str(created_weights[i]) + '\n')
             f.close()
             f = open('data.txt', 'r')  
         finally:
@@ -45,9 +48,11 @@ class Neironet():
         train_in = np.array([train_in])
         weights = np.array(weights)
 
-        print(sigmoid(np.dot(train_in, weights)))
+        #print(sigmoid(-2))
 
-        for i in range(20000):
+        print('before educating', sigmoid(np.dot(train_in, weights)))
+
+        for i in range(80000):
             input_layer = train_in
             #print(input_layer)
             #print(weights)
@@ -56,15 +61,22 @@ class Neironet():
             err = train_out - outputs
             adjustments = np.dot(input_layer.T, err * (outputs * (10 - outputs)))
 
-            #print(adjustments)
-            weights += adjustments[0]
+            #print(len(weights), len(adjustments))
+            #print(type(weights), type(adjustments))
+            #print(weights, adjustments.T[0])
 
-        print(sigmoid(np.dot(train_in, weights)))
+            #print(adjustments)
+            weights += adjustments.T[0]
+
+        print(np.dot(train_in, weights))
+        outputs = sigmoid(np.dot(train_in, weights))
+        print(outputs, chr(round(outputs * 1000)))
 
         f = open('data', 'w')
         for i in range(625):
                 f.write(str(weights[i]) + '\n')
         f.close()
+
 
         
             
