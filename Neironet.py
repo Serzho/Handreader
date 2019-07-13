@@ -13,103 +13,70 @@ class Neironet():
 
     def __educating(self, data, letter):
         sigmoid = lambda x: 1 / (1 + exp(-x))
-        
-        created_weights = np.array([])
-        print(letter, chr(letter))
-        train_out = np.array([[letter / 1000]]).T
-        print('train_out', train_out)
         train_in = []
         weights = []
+        train_out = (letter - 40) / 1000
+        print(train_out)
+
 
         for i in range(25):
             for k in range(25):
-                train_in.append(float(data[i][k]))
+                train_in.append(data[i][k])
 
-        np.random.seed(1)
-        
         try:
-            f = open('data.txt', 'r')            
+            f = open('data', 'r')            
         except FileNotFoundError:
-            f = open('data.txt', 'w')
+            print("New File")
+            f = open('data', 'w')
             created_weights = 2 * np.random.random(625) - 1
             for i in range(625):
                 f.write(str(created_weights[i]) + '\n')
                 #print(str(created_weights[i]) + '\n')
             f.close()
-            f = open('data.txt', 'r')  
+            f = open('data', 'r')  
         finally:
             for line in f.readlines():
                 weights.append(float(line.rstrip()))
             f.close()
 
-        
-        #print(weights)
-        #print(train_in)
-        train_in = np.array([train_in])
-        weights = np.array(weights)
-
-        #print(sigmoid(-2))
-
+        print(train_in)
         print('before educating', sigmoid(np.dot(train_in, weights)))
 
-        for i in range(80000):
-            input_layer = train_in
-            #print(input_layer)
-            #print(weights)
-            outputs = sigmoid(np.dot(input_layer, weights))
+        print('before educating', weights)
+        weights = self.__train(train_in, train_out, weights, 20000)
+        print('after educating', weights)
 
-            err = train_out - outputs
-            adjustments = np.dot(input_layer.T, err * (outputs * (10 - outputs)))
-
-            #print(len(weights), len(adjustments))
-            #print(type(weights), type(adjustments))
-            #print(weights, adjustments.T[0])
-
-            #print(adjustments)
-            weights += adjustments.T[0]
-
-        print(np.dot(train_in, weights))
-        outputs = sigmoid(np.dot(train_in, weights))
-        print(outputs, chr(round(outputs * 1000)))
-
+        print('after educating', sigmoid(np.dot(train_in, weights)))
+        
         f = open('data', 'w')
         for i in range(625):
                 f.write(str(weights[i]) + '\n')
         f.close()
 
+    def __train(self, t_in, t_out, weights, cycles):
+        for i in range(cycles):
+            weights = self.__iteration(t_in, t_out, weights)
 
+        return weights
+
+    def __iteration(self, t_in, t_out, weights):
+        sigmoid = lambda x: 1 / (1 + exp(-x))
+        x = 0
+
+        for i in range(625):
+            x += weights[i] * t_in[i]
+        y = sigmoid(x)
+
+        err = t_out - y
+        adjustments  = err * sigmoid(y)
         
+        for i in range(625):
+            weights[i] += t_in[i] * adjustments
+
+        return weights
             
 
-'''
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
 
-train_in = np.array([[0,0,1],
-                        [1,1,1],
-                        [1,0,1],
-                        [0,1,1]])
-
-train_out = np.array([[0,1,1,0]]).T
-
-np.random.seed(1)
-
-synaptic_weights = 2 * np.random.random((3,1)) - 1
-print(synaptic_weights)
-
-for i in range(20000):
-    input_layer = train_in
-    outputs = sigmoid(np.dot(input_layer, synaptic_weights))
-
-    err = train_out - outputs
-    adjustments = np.dot(input_layer.T, err * (outputs * (10 - outputs)))
-
-    synaptic_weights += adjustments
-
-print(synaptic_weights)
-    
-print(outputs)
-'''
 
 
 
