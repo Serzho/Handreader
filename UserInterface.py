@@ -1,5 +1,6 @@
 #импорт стандартных библиотек
 from tkinter import * #импорт сатндартной библиотеки GUI
+from tkinter import messagebox  
 
 #импорт сторонних библиотек
 import numpy as np #импорт numpy
@@ -12,8 +13,8 @@ class UserInterface(): #класс пользовательского интер
         #присваивание значений атрибутов
         self.__neironet = neironet #нейросеть
         self.__learning = learning #режим обучение
-        self.__field = np.zeros((25, 25)) #значения для передачи письменной буквы 
-        self.__mode = 0
+        self.__field = np.zeros((10, 10)) #значения для передачи письменной буквы 
+        self.__mode = 0 #режим 0 (тестирование)..... 1 (обучение) 
 
         #создание окна
         self.__window = Tk() #объект окна
@@ -74,10 +75,10 @@ class UserInterface(): #класс пользовательского интер
     def __input(self): #функция ввода прописной буквы
         self.__outputCanvas.delete("all") #очистка дополнительного поля
         #отрисовка данных для отправки на доп поле
-        for i in range(25): 
-            for k in range(25):
+        for i in range(10): 
+            for k in range(10):
                 if(bool(self.__field[i][k])):
-                         self.__outputCanvas.create_oval(i * 2, k * 2, i * 2 + 1, k * 2 + 1)
+                         self.__outputCanvas.create_oval(i * 5, k * 5, i * 5 + 3, k * 5 + 3)
         self.__sendField()
                     
 
@@ -87,7 +88,7 @@ class UserInterface(): #класс пользовательского интер
                                  fill = "black") #заливаем круг черным цветом
         #безопасный код для добавления данных на отправку
         try: 
-            self.__field[event.x//10, event.y//10] = 1
+            self.__field[event.x//25, event.y//25] = 1
         except IndexError: #исключение при выходе мыши за поле для рисования
             print("Out of field")
 
@@ -96,14 +97,17 @@ class UserInterface(): #класс пользовательского интер
         
     def __clearField(self):
         #очистка данных на отправку
-        for i in range(25):
-            for k in range(25):
+        for i in range(10):
+            for k in range(10):
                 self.__field[i][k] = 0
 
     def __sendField(self): #функция передачи данных
         self.__clearCanvas() #очистка поля
-        self.__neironet.getField(data = self.__field, mode = self.__mode, letter = self.__teachLetter)
-        self.__clearField()
+        output = self.__neironet.sendField(data = self.__field, mode = self.__mode, letter = self.__teachLetter) #отправка данных и получение ответа от нейросети 
+        self.__clearField() #очистка данных
+
+        if(not(output is None)): #если получен ответ (режим тестирования)
+            messagebox.showinfo('Результат:', chr(output)) #вывод окна с результатом
         
         
 
