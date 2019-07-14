@@ -43,6 +43,7 @@ class UserInterface(): #класс пользовательского интер
 
         if(learning): #создание элементов для разработчика
             self.__teachLetter = -1
+            self.__selected = IntVar()
             
             self.__selectLetters = Entry(self.__window, width = 5) #создание текствого поля для ввода буквы
             self.__selectLetters.place(x = 50, y = 340) #выставление координат
@@ -51,10 +52,10 @@ class UserInterface(): #класс пользовательского интер
             self.__acceptLetter.place(x = 90, y = 340) #выставление координат
 
             self.__selectTesting = Radiobutton(self.__window,text = "Тестирование", 
-                                               value = 1, command = self.__testing) #создание кнопки выбора тестирования
+                                               value = 1, command = self.__testing, variable = self.__selected) #создание кнопки выбора тестирования
             self.__selectTesting.place(x = 50, y = 240) #выставление координат
             self.__selectEducation = Radiobutton(self.__window, text = "Обучение",
-                                                value = 2, command = self.__education) #создание кнопки выбора обучения
+                                                value = 2, command = self.__education, variable = self.__selected) #создание кнопки выбора обучения
             self.__selectEducation.place(x = 50, y = 280) #выставление координат
 
         self.__window.mainloop() #запуск цикла окна
