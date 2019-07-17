@@ -13,7 +13,7 @@ class UserInterface(): #класс пользовательского интер
         #присваивание значений атрибутов
         self.__neironet = neironet #нейросеть
         self.__learning = learning #режим обучение
-        self.__field = np.zeros((10, 10)) #значения для передачи письменной буквы 
+        self.__field = np.zeros((20, 20)) #значения для передачи письменной буквы 
         self.__mode = 0 #режим 0 (тестирование)..... 1 (обучение) 
 
         #создание окна
@@ -24,13 +24,13 @@ class UserInterface(): #класс пользовательского интер
 
         #создание элементов окна
         #создание поля для рисования
-        self.__canvas = Canvas(self.__window, width = 250, height = 250, bg = "white") #создание поля рисования
+        self.__canvas = Canvas(self.__window, width = 200, height = 200, bg = "white") #создание поля рисования
         self.__canvas.pack() #упаковка поля
         self.__canvas.bind("<B1-Motion>", self.__drawCanvas) #привязывание события зажатой кнопки к функции рисования
         self.__canvas.place(x = 275, y = 50) #выставление координат 
 
         #создание поля для отображения передаваемых значений
-        self.__outputCanvas = Canvas(self.__window, width = 50, height = 50, bg = "white") #создание поля
+        self.__outputCanvas = Canvas(self.__window, width = 60, height = 60, bg = "white") #создание поля
         self.__outputCanvas.pack() #упаковка поля
         self.__outputCanvas.place(x = 375, y = 315) #выставление координат
 
@@ -76,10 +76,10 @@ class UserInterface(): #класс пользовательского интер
     def __input(self): #функция ввода прописной буквы
         self.__outputCanvas.delete("all") #очистка дополнительного поля
         #отрисовка данных для отправки на доп поле
-        for i in range(10): 
-            for k in range(10):
+        for i in range(20): 
+            for k in range(20):
                 if(bool(self.__field[i][k])):
-                         self.__outputCanvas.create_oval(i * 5, k * 5, i * 5 + 3, k * 5 + 3)
+                         self.__outputCanvas.create_oval(i * 3, k * 3, i * 3 + 3, k * 3 + 3)
         self.__sendField()
                     
 
@@ -89,7 +89,7 @@ class UserInterface(): #класс пользовательского интер
                                  fill = "black") #заливаем круг черным цветом
         #безопасный код для добавления данных на отправку
         try: 
-            self.__field[event.x//25, event.y//25] = 1
+            self.__field[round(event.x/10), round(event.y/10)] = 1
         except IndexError: #исключение при выходе мыши за поле для рисования
             print("Out of field")
 
@@ -98,8 +98,8 @@ class UserInterface(): #класс пользовательского интер
         
     def __clearField(self):
         #очистка данных на отправку
-        for i in range(10):
-            for k in range(10):
+        for i in range(20):
+            for k in range(20):
                 self.__field[i][k] = 0
 
     def __sendField(self): #функция передачи данных
