@@ -8,7 +8,7 @@ import threading as th
 import UserInterface as UI #подключение пользовательского интерфейса
 import Neironet as NN #подключение нейросети
 
-learning = True #запускать ли с режимом обучения
+learning = False #запускать ли с режимом обучения
 
 if(len(sys.argv) == 2): #проверка на дополнительный аргумент при запуске
     #определеине аргумента
