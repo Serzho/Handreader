@@ -1,5 +1,5 @@
 ## Handreader
-Neironet for reading handwriting
+Neutral network for reading handwriting
 
 ### Рабочий диапозон - английский алфавит заглавных букв
 
