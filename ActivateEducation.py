@@ -5,8 +5,8 @@ import random
 
 neironet = NN.Neironet() #создание экземпляра нейросети
 
-count_epochs = 200 #количество эпох
-count_iterations = 10 #количество интераций
+count_epochs = 1000 #количество эпох
+count_iterations = 2 #количество интераций
 
 neironet.educateFromBase(count_epochs, count_iterations) #запуск обучения
 

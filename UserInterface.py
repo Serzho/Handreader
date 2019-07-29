@@ -11,6 +11,7 @@ import Neironet as NN #подключение нейросети
 class UserInterface(): #класс пользовательского интерфейса
     def __init__(self, learning = False, neironet = None): #функция инициализации
         #присваивание значений атрибутов
+        self.__teachLetter = -1
         self.__neironet = neironet #нейросеть
         self.__learning = learning #режим обучение
         self.__field = np.zeros((20, 20)) #значения для передачи письменной буквы 
@@ -42,7 +43,6 @@ class UserInterface(): #класс пользовательского интер
         self.__clearBtn.place(x = 50, y = 140) #выставление координат 
 
         if(learning): #создание элементов для разработчика
-            self.__teachLetter = -1
             self.__selected = IntVar()
             
             self.__selectLetters = Entry(self.__window, width = 5) #создание текствого поля для ввода буквы

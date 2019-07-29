@@ -46,6 +46,8 @@ class Neironet():
         result = tests.index(probablity) + 65 #нахождение буквы с максимальной вероятностью
         probablity_of_success = (probablity / sum(tests)) #нахождение вероятности успешности полученной результата
         print('result %s probablity %f %s' % (chr(result), probablity_of_success, chr(10084))) #вывод результата, вероятности и сердешка <3
+        if(probablity_of_success < 0.6):
+            result = ord('?')
         return result
 
     def __educating(self, data, letter): #режим обучения       
@@ -117,7 +119,7 @@ class Neironet():
             layer1 = sigmoid(np.dot(layer0, weights[i])) #скрытый слой
 
             err = t_out[i] - layer1 #вычисление разницы между нужным и полученным значением
-            adjustments  = err * sigmoid(layer1) #вычисления значений для добавления к первоначальным весам
+            adjustments  = err * sigmoid(layer1) * 0.05 #вычисления значений для добавления к первоначальным весам
             
             weights[i] += np.dot(layer0.T, adjustments) #изменение значения для каждого веса
 
